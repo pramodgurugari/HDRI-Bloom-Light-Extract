@@ -1,0 +1,306 @@
+set cut_paste_input [stack 0]
+version 15.1 v4
+push $cut_paste_input
+Group {
+ name HDRIBloomExtract
+ selected true
+ xpos 1185
+ ypos -234
+ addUserKnob {20 HDRIBloomExtract}
+ addUserKnob {6 exposureCheck +STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {20 BloomExtract n 1}
+ addUserKnob {6 EnableBloomExtract +STARTLINE}
+ addUserKnob {7 Range R 0 50}
+ Range 2.4
+ addUserKnob {16 RangeRolloff l "Range Rolloff"}
+ RangeRolloff 0.12
+ addUserKnob {7 BlurSize l "Blur Size" R 0 500}
+ addUserKnob {7 BlurEdge l "Blur Edge" R 0 20}
+ addUserKnob {20 endGroup n -1}
+ addUserKnob {26 ""}
+ addUserKnob {20 SunRemove n 1}
+ addUserKnob {26 Sunremove l "" +STARTLINE T "Align the box to the center of the sun and adjust its size, width, and height as needed."}
+ addUserKnob {6 EnableSunRemove +STARTLINE}
+ EnableSunRemove true
+ addUserKnob {41 box T Crop2.box}
+ addUserKnob {7 BoxInsideSize l "Box Inside Size" R -100 100}
+ BoxInsideSize -56
+ addUserKnob {7 BoxBlurSize R 0 100}
+ BoxBlurSize 46.5
+ addUserKnob {7 Blending R 0 500}
+ Blending 500
+ addUserKnob {20 endGroup_1 n -1}
+ addUserKnob {26 ""}
+ addUserKnob {26 HDRI l "HDRI Bloom Extract" T "Created BY Pramod.g\nhttps://pramod_pro.artstation.com/\n\nHDRI Bloom Light Extract :-V1.0"}
+}
+ Input {
+  inputs 0
+  name InputHDRI
+  xpos -1025
+  ypos -1745
+ }
+ Dot {
+  name Dot2
+  xpos -991
+  ypos -1651
+ }
+set N68e10800 [stack 0]
+ Dot {
+  name Dot3
+  xpos -302
+  ypos -1646
+ }
+ EXPTool {
+  mode Lights
+  red -40.91999817
+  green -40.91999817
+  blue -40.91999817
+  name Exposure1
+  xpos -336
+  ypos -2
+ }
+ Input {
+  inputs 0
+  name Mask
+  xpos -563
+  ypos -203
+  number 1
+ }
+push $N68e10800
+ Dot {
+  name Dot1
+  xpos -991
+  ypos -1525
+ }
+set N68e11800 [stack 0]
+ HSVTool {
+  huesrcs {0 0}
+  satsrcs {0 0}
+  brtsrcs {{Range} 1000000}
+  brtrolloffrange {{RangeRolloff*10}}
+  Conversion brightness
+  name HSVTool_Bloom1
+  xpos -720
+  ypos -1535
+ }
+ EdgeBlur {
+  channels alpha
+  size {{BlurSize}}
+  edge_mult {{BlurEdge}}
+  brightness 10
+  name EdgeBlur1
+  xpos -720
+  ypos -1380
+ }
+push $N68e11800
+push 0
+ Merge2 {
+  inputs 2+1
+  name Merge3
+  label "Bbox: \[value bbox]"
+  xpos -1025
+  ypos -1380
+ }
+push $N68e10800
+ Dot {
+  name Dot4
+  xpos -1135
+  ypos -1651
+ }
+ Dot {
+  name Dot5
+  xpos -1135
+  ypos -1242
+ }
+ Switch {
+  inputs 2
+  which {{EnableBloomExtract}}
+  name Switch2
+  xpos -1025
+  ypos -1245
+ }
+ Dot {
+  name Dot7
+  xpos -990
+  ypos -1206
+ }
+set N6d963000 [stack 0]
+ Dot {
+  name Dot12
+  xpos -991
+  ypos -1170
+ }
+set N6d963400 [stack 0]
+ Shuffle {
+  alpha white
+  name Shuffle2
+  label "\[value in]"
+  xpos -1025
+  ypos -1110
+ }
+ Dot {
+  name Dot13
+  xpos -991
+  ypos -1006
+ }
+set N6d963c00 [stack 0]
+ Crop {
+  box {2606.500122 1382.100037 2668.700073 1431.500061}
+  name Crop2
+  xpos -1145
+  ypos -1010
+ }
+ ChannelMerge {
+  operation multiply
+  name ChannelMerge3
+  xpos -1145
+  ypos -928
+ }
+ FilterErode {
+  channels rgba
+  size {{BoxInsideSize}}
+  name FilterErode2
+  xpos -1145
+  ypos -863
+ }
+ Blur {
+  channels rgba
+  size {{BoxBlurSize}}
+  name Blur2
+  label "\[value size]"
+  xpos -1145
+  ypos -826
+ }
+ Dot {
+  name Dot14
+  xpos -1111
+  ypos -725
+ }
+set N6d9c5000 [stack 0]
+ Dot {
+  name Dot15
+  xpos -1111
+  ypos -228
+ }
+ Dot {
+  name Dot16
+  xpos -906
+  ypos -228
+ }
+push $N6d9c5000
+push $N6d963c00
+ ChannelMerge {
+  inputs 2
+  operation stencil
+  name ChannelMerge4
+  xpos -1025
+  ypos -741
+ }
+ Premult {
+  name Premult1
+  xpos -1025
+  ypos -622
+ }
+ Blur {
+  channels rgba
+  size {{Blending}}
+  quality 5
+  name Smudge2
+  label "\[value size]"
+  xpos -1025
+  ypos -596
+ }
+ Unpremult {
+  name Unpremult2
+  xpos -1025
+  ypos -552
+ }
+ Dot {
+  name Dot17
+  xpos -991
+  ypos -421
+ }
+push $N6d963400
+ Dot {
+  name Dot18
+  xpos -809
+  ypos -1170
+ }
+ Clamp {
+  channels rgba
+  maximum 10000
+  name Clamp1
+  xpos -833
+  ypos -617
+ }
+ Keymix {
+  inputs 3
+  channels rgba
+  name Keymix2
+  xpos -833
+  ypos -425
+ }
+ Grade {
+  name clamp_blacks1
+  xpos -833
+  ypos -352
+ }
+ Clamp {
+  channels alpha
+  name Clamp4
+  xpos -833
+  ypos -295
+ }
+push 0
+ Merge2 {
+  inputs 2+1
+  name Merge2
+  xpos -833
+  ypos -202
+ }
+set N6d6fe400 [stack 0]
+push $N6d963000
+ Dot {
+  name Dot8
+  xpos -1308
+  ypos -1206
+ }
+ Dot {
+  name Dot6
+  xpos -1308
+  ypos -124
+ }
+ Switch {
+  inputs 2
+  which {{EnableSunRemove}}
+  name Switch3
+  xpos -833
+  ypos -127
+ }
+ Dot {
+  name Dot19
+  xpos -799
+  ypos -89
+ }
+ Switch {
+  inputs 2
+  which {{exposureCheck}}
+  name Switch1
+  xpos -833
+  ypos -2
+ }
+ Output {
+  name Output1
+  xpos -833
+  ypos 90
+ }
+push $N6d6fe400
+ Viewer {
+  frame_range 1-100
+  monitorOutNDISenderName "Nuke - hdribloom - Viewer1"
+  name Viewer1
+  xpos -833
+  ypos -178
+ }
+end_group
